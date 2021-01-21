@@ -1,3 +1,3 @@
 # MySQL-exercises
 
-This repository is meant to store SQL exercises alongside their solutions.
+This repository is meant to store and share SQL exercises with their solutions.
