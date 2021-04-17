@@ -75,3 +75,19 @@ select distinct p.product_id,
 case when last_price is not null then last_price else 10 end as updated_price
 from Products p
 left join tmp2 on p.product_id = tmp2.product_id
+
+#SOLUTION 3:
+with updated as (
+select product_id, new_price as updated_price
+from products 
+where (product_id, change_date) in
+ (select product_id, max(change_date) as change_date
+ from products
+ where change_date<='2019-08-16'
+ group by product_id))
+ 
+ select distinct p.product_id, 
+ case when updated_price is null then 10 else updated_price end as updated_price
+ from products p
+ left join updated u on p.product_id = u.product_id;
+
