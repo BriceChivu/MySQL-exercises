@@ -43,6 +43,8 @@ VALUES
   ('1', '35'),
   ('3', '10');
   
+#SOLUTION 1:
+
 with dis as (
 select distinct product_id
 from products)
@@ -56,3 +58,20 @@ from products p
 where change_date <= '2019-08-16') as cte on cte.product_id=dis.product_id) as tmp
 where rankk = 1
 order by price desc;
+
+#SOLUTION 2:
+with tmp as (
+select product_id, new_price as last_price, change_date,
+dense_rank() over(partition by product_id order by change_date desc) as ranking
+from Products
+where change_date <= '2019-08-16')
+,
+tmp2 as (
+select product_id, last_price
+from tmp
+where ranking = 1)
+
+select distinct p.product_id, 
+case when last_price is not null then last_price else 10 end as updated_price
+from Products p
+left join tmp2 on p.product_id = tmp2.product_id
